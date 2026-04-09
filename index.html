@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gabriel Voix — Ingénieur Aérospatial</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a0b; --bg2: #111114; --bg3: #18181d;
+    --line: rgba(255,255,255,0.07); --line2: rgba(255,255,255,0.13);
+    --accent: #c8ff6e; --accent2: #6effd4;
+    --text: #e8e8ea; --muted: #b0b5c0;
+    --font-title: 'Syne', sans-serif; --font-mono: 'DM Mono', monospace;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-title); line-height: 1.6; overflow-x: hidden; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 3rem; border-bottom: 1px solid var(--line);
+    background: rgba(10,10,11,0.88); backdrop-filter: blur(14px);
+  }
+  .nav-logo { font-family: var(--font-mono); font-size: 13px; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; }
+  .nav-logo span { color: var(--muted); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { font-family: var(--font-mono); font-size: 12px; color: var(--muted); text-decoration: none; letter-spacing: 0.12em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-menu-btn { display: none; background: none; border: none; color: var(--text); font-size: 22px; cursor: pointer; }
+
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 6rem 3rem 5rem;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .hero-bg-text {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    font-size: clamp(80px, 18vw, 220px); font-weight: 800; color: rgba(255,255,255,0.018);
+    white-space: nowrap; letter-spacing: -0.04em; pointer-events: none; user-select: none;
+  }
+  .hero-tag { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+  .hero-tag::before { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--accent); }
+  .hero-name { font-size: clamp(48px, 7.5vw, 90px); font-weight: 800; line-height: 0.95; letter-spacing: -0.03em; margin-bottom: 1.5rem; }
+  .hero-name span { color: var(--accent); }
+  .hero-desc { max-width: 560px; font-family: var(--font-mono); font-size: 13px; color: var(--muted); line-height: 1.85; margin-bottom: 2.5rem; }
+  .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.85rem 2rem; border: 1px solid var(--line2); background: transparent; color: var(--text); cursor: pointer; transition: all 0.22s; text-decoration: none; display: inline-block; }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary { background: var(--accent); color: #0a0a0b; border-color: var(--accent); font-weight: 500; }
+  .btn.primary:hover { background: transparent; color: var(--accent); }
+  .hero-scroll { position: absolute; right: 3rem; bottom: 5rem; font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; writing-mode: vertical-rl; display: flex; align-items: center; gap: 1rem; }
+  .hero-scroll::after { content: ''; display: block; width: 1px; height: 48px; background: var(--muted); }
+
+  section { padding: 6rem 3rem; border-bottom: 1px solid var(--line); }
+  .section-header { display: flex; align-items: baseline; gap: 1.5rem; margin-bottom: 4rem; }
+  .section-num { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.2em; }
+  .section-title { font-size: clamp(22px, 3.5vw, 36px); font-weight: 700; letter-spacing: -0.02em; }
+  .section-line { flex: 1; height: 1px; background: var(--line2); max-width: 200px; }
+
+  .exp-proj-list { display: flex; flex-direction: column; gap: 2px; }
+
+  .exp-proj-card {
+    display: grid; grid-template-columns: 1.2fr 1fr;
+    background: var(--bg2); border: 1px solid var(--line);
+    overflow: hidden; transition: border-color 0.2s; margin-bottom: 2px;
+  }
+  .exp-proj-card:hover { border-color: var(--line2); }
+
+  .card-slider { position: relative; min-height: 380px; max-height: 450px; background: var(--bg); overflow: hidden; }
+  .slides { display: flex; width: 100%; height: 380px; transition: transform 0.45s cubic-bezier(0.4,0,0.2,1); }
+  .slide { min-width: 100%; height: 380px; overflow: hidden; }
+  .slide img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(10%) contrast(1.05); transition: filter 0.3s; }
+  .slide img.contain { object-fit: contain; background: #0d0d10; }
+  .slide video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .slide iframe { width: 100%; height: 100%; border: none; display: block; }
+  .exp-proj-card:hover .slide img { filter: grayscale(0%) contrast(1.08); }
+
+  .slider-controls {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.6rem 0.75rem;
+    background: linear-gradient(transparent, rgba(10,10,11,0.8));
+  }
+  .slider-dots { display: flex; gap: 5px; }
+  .dot { width: 18px; height: 2px; background: rgba(255,255,255,0.2); cursor: pointer; border: none; padding: 0; transition: background 0.2s, width 0.25s; }
+  .dot.active { background: var(--accent); width: 30px; }
+  .slider-arrows { display: flex; gap: 6px; }
+  .arrow-btn {
+    background: rgba(255,255,255,0.07); border: 1px solid var(--line2);
+    color: var(--text); font-size: 13px; width: 28px; height: 28px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; font-family: var(--font-mono);
+  }
+  .arrow-btn:hover { background: var(--accent); color: #0a0a0b; border-color: var(--accent); }
+  .card-slider.single .slider-controls { display: none; }
+
+  .card-info { padding: 2.5rem 2rem; display: flex; flex-direction: column; justify-content: space-between; border-left: 1px solid var(--line); }
+  .card-meta { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+  .card-index { font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 0.2em; text-transform: uppercase; }
+  .card-period { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.1em; }
+  .card-title { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.4rem; color: var(--text); }
+  .card-role { font-family: var(--font-mono); font-size: 11px; color: var(--accent2); letter-spacing: 0.08em; margin-bottom: 1.25rem; }
+  .card-bullets { list-style: none; font-family: var(--font-mono); font-size: 12px; color: #c8cdd8; line-height: 1.9; flex: 1; }
+  .card-bullets li { padding-left: 0.75rem; position: relative; margin-bottom: 0.5rem; border-left: 2px solid rgba(200,255,110,0.3); padding-top: 0.1rem; padding-bottom: 0.1rem; }
+  .card-footer { margin-top: 1.5rem; }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .card-tag { font-family: var(--font-mono); font-size: 10px; color: var(--accent2); padding: 3px 10px; border: 1px solid rgba(110,255,212,0.25); letter-spacing: 0.08em; transition: all 0.2s; }
+  .card-tag:hover { background: var(--accent2); color: #0a0a0b; border-color: var(--accent2); }
+  .img-credit { font-family: var(--font-mono); font-size: 9px; color: rgba(136,136,145,0.45); margin-top: 0.6rem; font-style: italic; }
+
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+  .contact-sub { font-family: var(--font-mono); font-size: 14px; color: var(--muted); line-height: 1.8; }
+  .contact-note { font-family: var(--font-mono); font-size: 12px; color: red; margin-top: 4rem; margin-bottom: 2rem;line-height: 1.7; opacity: 0.7; padding-left: 1rem; }
+  .contact-links { display: flex; flex-direction: column; gap: 1.5rem; }
+  .contact-link { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border: 1px solid var(--line2); background: var(--bg2); text-decoration: none; color: var(--text); transition: all 0.2s; }
+  .contact-link:hover { border-color: var(--accent); background: var(--bg3); }
+  .contact-link-name { font-family: var(--font-mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; display: block; margin-bottom: 4px; }
+  .contact-link-value { font-size: 14px; font-weight: 600; }
+  .contact-arrow { color: var(--accent); font-size: 20px; }
+
+  footer { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; }
+  .footer-copy { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.1em; }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; flex-direction: column; gap: 1.2rem; }
+    .nav-links.open { display: flex; position: absolute; top: 100%; left: 0; right: 0; background: rgba(10,10,11,0.98); padding: 1.5rem; border-bottom: 1px solid var(--line); }
+    .nav-menu-btn { display: block; }
+    section, #hero { padding: 4rem 1.5rem; }
+    #hero { padding-bottom: 4rem; }
+    .hero-scroll { display: none; }
+    .exp-proj-card { grid-template-columns: 1fr; }
+    .card-slider { min-height: 260px; max-height: 260px; }
+    .slides { height: 260px; }
+    .slide { height: 260px; }
+    .card-info { border-left: none; border-top: 1px solid var(--line); }
+    .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+  /* image normale */
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.card-slider.portrait { min-height: 550px; max-height: 800px; }
+.card-slider.portrait .slides { height: 550px; }
+.card-slider.portrait .slide { height: 550px; }
+.exp-proj-card.narrow-img { grid-template-columns: 0.6fr 1fr; }
+.exp-proj-card.airbus-img { grid-template-columns: 0.75fr 1fr; }
+
+.exp-proj-card.tour-img { grid-template-columns: 2fr 3fr; }
+.card-slider.tour-height { min-height: 700px; max-height: 700px; }
+.card-slider.tour-height .slides { height: 700px; }
+.card-slider.tour-height .slide { height: 700px; }
+
+
+
+
+
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#hero">
+  <img src="https://GabrielVoix.github.io/images/logo_fixed_v3.png" 
+    style="height: 40px; width: auto; opacity: 0.85; vertical-align: middle; margin-right: 0.75rem;" />Gabriel Voix <span>— CPI</span></a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#experiences">Expériences</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-menu-btn" id="menu-btn" aria-label="Menu">&#9776;</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+
+  <div class="hero-bg-text">COMPOSITE</div>
+  <div class="hero-tag">Ingénieur aérospatial — Polytechnique Montréal</div>
+  <h1 class="hero-name">Conception.<br>Simulation.<br><span>Fabrication.</span></h1>
+  <p class="hero-desc">
+    Baccalauréat en génie aérospatial — spécialisé en structures composites,
+    simulation numérique FEA et procédés de fabrication. Expérience industrielle
+    chez Bell Textron (Mirabel) et Airbus (Toulouse). GPA 3.61/4.0 — Mention d'excellence.
+  </p>
+  <div class="hero-cta">
+    <a href="#experiences" class="btn primary">MES EXPÉRIENCES</a>
+    <a href="#contact" class="btn">Me contacter</a>
+  </div>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- EXPÉRIENCES & PROJETS -->
+<section id="experiences">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Expériences & Projets</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="exp-proj-list">
+
+    <!-- ═══ 1. BELL ═══ -->
+    <div class="exp-proj-card">
+      <div class="card-slider">
+        <div class="slides">
+          <div class="slide"><img src="https://GabrielVoix.github.io/images/enhanced_image22.JPG" alt="Canted frame Bell 505" /></div>
+          <div class="slide"><img src="https://GabrielVoix.github.io/images/enhanced_image_21.JPG" alt="Mid fuselage Bell 505" class="contain" /></div>
+          <div class="slide"><img src="https://GabrielVoix.github.io/images/407_baggage_bay_22.JPG" alt="Baggage bay Bell 407" /></div>
+        </div>
+        <div class="slider-controls">
+          <div class="slider-dots">
+            <button class="dot active"></button>
+            <button class="dot"></button>
+            <button class="dot"></button>
+          </div>
+          <div class="slider-arrows">
+            <button class="arrow-btn prev">&#8592;</button>
+            <button class="arrow-btn next">&#8594;</button>
+          </div>
+        </div>
+      </div><!-- .card-slider -->
+      <div class="card-info">
+        <div>
+          <div class="card-meta">
+            <span class="card-index">01</span>
+            <span class="card-period">Été 2025 · Mirabel, Québec</span>
+          </div>
+          <div class="card-title">Stage RPMI — Rapid Prototyping & Manufacturing Innovation</div>
+          <div class="card-role">Bell Textron</div>
+          <ul class="card-bullets">
+            <li>Le canted frame (image1) est la première pièce classe I, structurellement critique, fabriquée par thermocompression à Mirabel. Sa géométrie à double courbure génère des angles de cisaillement que PAM-Composite permet de corriger avant la fabrication du moule.</li>
+            <li>La mid fuse upper skin (image2) protège la transmission. Le projet a démontré la rentabilité du placement automatique de plis avec un layup complexe pour réduire le poids.</li>
+            <li>La porte de la soute (image3) comporte un corps en nid d'abeille : la simulation a fourni la pression exacte à appliquer sur les plis sans écraser la structure interne.</li>
+          </ul>
+        </div>
+        <div class="card-footer">
+          <div class="card-tags">
+            <span class="card-tag">Composite</span>
+            <span class="card-tag">PAM-Composite</span>
+            <span class="card-tag">CATIA V5/V6</span>
+            <span class="card-tag">FEA</span>
+            <span class="card-tag">Conception de moules</span>
+          </div>
+          <p class="img-credit">
+            Images à titre illustratif — 
+            <a href="https://www.gettyimages.ae/detail/news-photo/worker-assembles-a-bell-505-jet-ranger-x-helicopter-at-a-news-photo/1239568761" target="_blank" style="color: inherit;">© Getty Images</a> · 
+            <a href="https://helipaddy.com/helicopter-profiles-bell-505/" target="_blank" style="color: inherit;">Helipaddy</a> · 
+            <a href="https://www.greekairtaxinetwork.com/helicopter/bell-407/" target="_blank" style="color: inherit;">Greek Air Taxi Network</a>
+          </p>
+        </div>
+      </div><!-- .card-info -->
+    </div><!-- .exp-proj-card BELL -->
+
+    <!-- ═══ 2. COPV ═══ -->
+    <div class="exp-proj-card">
+      <div class="card-slider">
+        <div class="slides">
+          <div class="slide"><img src="https://GabrielVoix.github.io/images/COPV_FEM.png" alt="FEM COPV" class="contain" /></div>
+          <div class="slide"><img src="https://GabrielVoix.github.io/images/COPV_dis.png" alt="Displacement COPV" class="contain" /></div>
+          <div class="slide"><img src="https://GabrielVoix.github.io/images/COPV_ply.png" alt="Ply COPV" class="contain" /></div>
+          <div class="slide"><img src="https://GabrielVoix.github.io/images/COPV_test.jpg" alt="Test COPV" /></div>
+          <div class="slide"><img src="https://GabrielVoix.github.io/images/usinage.png" alt="Test COPV" /></div>
+
+        </div>
+        <div class="slider-controls">
+          <div class="slider-dots">
+            <button class="dot active"></button>
+            <button class="dot"></button>
+            <button class="dot"></button>
+            <button class="dot"></button>
+            <button class="dot"></button>
+
+          </div>
+          <div class="slider-arrows">
+            <button class="arrow-btn prev">&#8592;</button>
+            <button class="arrow-btn next">&#8594;</button>
+          </div>
+        </div>
+      </div><!-- .card-slider -->
+      <div class="card-info">
+        <div>
+          <div class="card-meta">
+            <span class="card-index">02</span>
+            <span class="card-period">Hiver 2026 · Montréal</span>
+          </div>
+          <div class="card-title">Conception et analyse FEA d'un COPV en filament winding</div>
+          <div class="card-role">Polytechnique Montréal</div>
+          <ul class="card-bullets">
+            <li>Conception d'un COPV en liner aluminium 6061 overwrappé en fibre de carbone par filament winding. Capacité prévue de 3000psi avec FS=3.</li>
+            <li>Analyse FEA sur le liner et le composite pour répartir les contraintes(image1-3), minimiser les zones de délamination à la jonction dôme-cylindre, protéger la soudure, évaluer le cycle d'autofrettage et optimiser le poids sur Simcenter 3D.</li>
+            <li>Test et validation du overwrap en fibre de carbone pour reproduire les patterns de layup théoriques. (image4)</li>
+            <li>Préparation des chemins d'usinage (image5) et des procédures de test pour l'étanchéité des soudures et de la tubulure.</li>
+          </ul>
+        </div>
+        <div class="card-footer">
+          <div class="card-tags">
+            <span class="card-tag">COPV</span>
+            <span class="card-tag">Simcenter 3D</span>
+            <span class="card-tag">NX</span>
+            <span class="card-tag">Filament winding</span>
+          </div>
+        </div>
+      </div><!-- .card-info -->
+    </div><!-- .exp-proj-card COPV -->
+
+    <!-- ═══ 3. ORONOS ═══ -->
+    <div class="exp-proj-card narrow-img">
+      <div class="card-slider portrait">
+        <div class="slides">
+          <div class="slide"><img src="https://GabrielVoix.github.io/images/NC_PD.jpg" alt="Pièces Phobos Deimos" class="contain"/></div>
+          <div class="slide"><img src="https://GabrielVoix.github.io/images/NC_winding.jpg" alt="Enroulement filamentaire CNC" class="contain"/></div>
+          <div class="slide"><img src="https://GabrielVoix.github.io/images/bagging.jpg" alt="Ensachage sous vide" class="contain"/></div>
+          <div class="slide"><img src="https://GabrielVoix.github.io/images/test_presse.PNG" alt="Test presse compression" class="contain"/></div>
+          <div class="slide"><img src="https://GabrielVoix.github.io/images/Full_PP_2.PNG" alt="Fusée complète" class="contain" class="contain"/></div>
+        </div>
+        <div class="slider-controls">
+          <div class="slider-dots">
+            <button class="dot active"></button>
+            <button class="dot"></button>
+            <button class="dot"></button>
+            <button class="dot"></button>
+            <button class="dot"></button>
+          </div>
+          <div class="slider-arrows">
+            <button class="arrow-btn prev">&#8592;</button>
+            <button class="arrow-btn next">&#8594;</button>
+          </div>
+        </div>
+      </div><!-- .card-slider -->
+      <div class="card-info">
+        <div>
+          <div class="card-meta">
+            <span class="card-index">03</span>
+            <span class="card-period">2023-Présent · Montréal</span>
+          </div>
+          <div class="card-title">Responsable filament winding</div>
+          <div class="card-role">Oronos</div>
+          <ul class="card-bullets">
+            <li>Direction du projet de filament winding depuis 2023 et fabrication complète d'une fusée par ce procédé avec lancement prévu en août 2026.</li>
+            <li>Procédé de fabrication et de conception basé sur de la littérature scientifique et industrielle.</li>
+            <li>Logiciel Python/PyQt générant le G-Code de trajectoire pour propriétés anisotropes optimales sur pièces à section variable.</li>
+            <li>Premières pièces volées à IREC, puis record d'altitude étudiante Canada à 67 000 pi à Launch Canada.</li>
+            <li>Validation Simcenter 3D du flambement non linéaire, tests destructifs en compression pour valider les calculs et optimiser l'orientation de la fibre.</li>
+          </ul>
+        </div>
+        <div class="card-footer">
+          <div class="card-tags">
+            <span class="card-tag">Leadership technique</span>
+            <span class="card-tag">Filament winding</span>
+            <span class="card-tag">Python / PyQt5</span>
+            <span class="card-tag">Analyse de structure composite</span>
+          </div>
+        </div>
+      </div><!-- .card-info -->
+    </div><!-- .exp-proj-card ORONOS -->
+
+
+    <!-- ═══ 4. AIRBUS ═══ -->
+    <div class="exp-proj-card airbus-img">
+      <div class="card-slider">
+        <div class="slides">
+          <div class="slide">
+            <img src="https://GabrielVoix.github.io/images/zeroE_2.JPG" alt="Enceinte cryogénique Airbus"  />
+          </div>
+          <div class="slide">
+            <img src="https://GabrielVoix.github.io/images/Porte.png" alt="Enceinte cryogénique Airbus"  />
+          </div>
+        </div>
+
+        <!-- 🔥 IMPORTANT : controls -->
+        <div class="slider-controls">
+          <div class="slider-dots">
+            <button class="dot active"></button>
+            <button class="dot"></button>
+          </div>
+          <div class="slider-arrows">
+            <button class="arrow-btn prev">&#8592;</button>
+            <button class="arrow-btn next">&#8594;</button>
+          </div>
+        </div>
+
+      </div><!-- .card-slider -->
+
+      <div class="card-info">
+        <div>
+          <div class="card-meta">
+            <span class="card-index">04</span>
+            <span class="card-period">Été 2024 · Toulouse, France</span>
+          </div>
+          <div class="card-title">Stage international en essai de fatigue</div>
+          <div class="card-role">Laboratoire R&D d'Airbus Operation SAS</div>
+          <ul class="card-bullets">
+            <li>Ce projet supportait les essais en fatigue des sections composite des COPV du programme ZEROe, visant à mettre au point des réservoirs d'hydrogène pour le premier avion commercial à zéro émission. (image1)</li>
+            <li>Design du mécanisme d'ouverture de porte pour l'enceinte cryogénique de test. (image2) Le mécanisme aligne parfaitement porte et enceinte pour protéger le joint étanche, conçu selon les machines disponibles pour usiner et découper les pièces.</li>
+          </ul>
+        </div>
+
+        <div class="card-footer">
+          <div class="card-tags">
+            <span class="card-tag">Prototypage rapide</span>
+            <span class="card-tag">Fatigue des matériaux</span>
+            <span class="card-tag">Modélisation assemblages complexes</span>
+
+          </div>
+          <p class="img-credit">
+            Image à titre illustratif — 
+            <a href="https://www.businessinsider.com/airbus-operated-a380-jet-with-100-sustainable-aviation-fuel-saf-2022-3" target="_blank" style="color: inherit;">© Business Insider</a>
+          </p>
+        </div>
+      </div><!-- .card-info -->
+    </div>
+    <!-- ═══ 5. TOUR CNC ═══ -->
+    <div class="exp-proj-card tour-img">
+      <div class="card-slider tour-height">
+        <div class="slides">
+          <div class="slide"><img src="https://GabrielVoix.github.io/images/elec.jpg" /></div>
+          <div class="slide"><img src="https://GabrielVoix.github.io/images/CADtour.png" alt="Tour CNC CAD SolidWorks" class="contain" /></div>
+          alt="Boîtier électrique" 
+          style="object-fit: cover; object-position: center top;" /></div>
+        <div class="slider-controls">
+          <div class="slider-dots">
+            <button class="dot active"></button>
+            <button class="dot"></button>
+          </div>
+          <div class="slider-arrows">
+            <button class="arrow-btn prev">&#8592;</button>
+            <button class="arrow-btn next">&#8594;</button>
+          </div>
+        </div>
+      </div><!-- .card-slider -->
+      <div class="card-info">
+        <div>
+          <div class="card-meta">
+            <span class="card-index">05</span>
+            <span class="card-period">2025-Présent · Montréal</span>
+          </div>
+          <div class="card-title">Conception & fabrication d'un tour composite CNC</div>
+          <div class="card-role">Projet intégrateur 4 - Polytechnique Montréal</div>
+          <ul class="card-bullets">
+            <li>Conception d'un panneau électrique certifiable CSA à partir des normes industrielles, sans formation préalable en électricité, par recherche appliquée des normes en vigueur, tel que CSA.</li>
+            <li>Schématisation du circuit électrique, achat et assemblage du boîtier de contrôle.</li>
+            <li>Installation et configuration LinuxCNC, communication avec les axes de la machine.</li>
+            <li>Machine conçue spécifiquement pour supporter le projet de filament winding d'Oronos.</li>
+          </ul>
+        </div>
+        <div class="card-footer">
+          <div class="card-tags">
+            <span class="card-tag">Standard industriels</span>
+            <span class="card-tag">SolidWorks</span>
+            <span class="card-tag">LinuxCNC</span>
+            <span class="card-tag">Électronique</span>
+            <span class="card-tag">G-Code</span>
+          </div>
+        </div>
+      </div><!-- .card-info -->
+    </div><!-- .exp-proj-card TOUR CNC -->
+
+  </div><!-- .exp-proj-list -->
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Contact</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="contact-grid">
+    <div>
+      <p class="contact-sub">
+        Ouvert aux opportunités en startups et PME axées sur la conception et fabrication de structures composites. 
+        Basé à Montréal et ses environs. 
+      </p>
+      <p class="contact-note">
+            *** Les photographies présentées dans ce portfolio sont ma propriété personnelle,
+            issues d'internet avec droits identifiés, ou utilisées avec les autorisations applicables. ***
+      </p>
+
+    </div>
+    <div class="contact-links">
+      <a href="mailto:gabriel.voix@etud.polymtl.ca" class="contact-link">
+        <div><span class="contact-link-name">Email</span><span class="contact-link-value">gabriel.voix@etud.polymtl.ca</span></div>
+        <span class="contact-arrow">&#8594;</span>
+      </a>
+      <a href="http://www.linkedin.com/in/gabriel-voix-aa675b298" target="_blank" class="contact-link">
+        <div><span class="contact-link-name">LinkedIn</span><span class="contact-link-value">gabriel-voix</span></div>
+        <span class="contact-arrow">&#8594;</span>
+      </a>
+      <a href="tel:+14385056808" class="contact-link">
+        <div><span class="contact-link-name">Téléphone</span><span class="contact-link-value">+1 (438) 505-6808</span></div>
+        <span class="contact-arrow">&#8594;</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-copy">© 2026 — Gabriel Voix, CPI - Génie aérospatial · Montréal</span>
+  <span class="footer-copy" style="color: var(--accent); font-weight: 600;">CPI</span>
+</footer>
+
+<script>
+  const btn = document.getElementById('menu-btn');
+  const links = document.getElementById('nav-links');
+  btn.addEventListener('click', () => links.classList.toggle('open'));
+  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+
+  document.querySelectorAll('.card-slider:not(.single)').forEach(slider => {
+    const slides = slider.querySelector('.slides');
+    const dots = slider.querySelectorAll('.dot');
+    const prev = slider.querySelector('.prev');
+    const next = slider.querySelector('.next');
+    const total = dots.length;
+    let cur = 0;
+
+    function goTo(n) {
+      cur = (n + total) % total;
+      slides.style.transform = `translateX(-${cur * 100}%)`;
+      dots.forEach((d, i) => d.classList.toggle('active', i === cur));
+    }
+
+    prev.addEventListener('click', () => goTo(cur - 1));
+    next.addEventListener('click', () => goTo(cur + 1));
+    dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
+
+    let timer = setInterval(() => goTo(cur + 1), 4500);
+    slider.addEventListener('mouseenter', () => clearInterval(timer));
+    slider.addEventListener('mouseleave', () => { timer = setInterval(() => goTo(cur + 1), 4500); });
+  });
+</script>
+</body>
+</html>
